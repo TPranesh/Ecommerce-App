@@ -211,7 +211,7 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => CartPage()), // ✅ Navigates to CartPage
+            MaterialPageRoute(builder: (context) => CartPage()), 
           );
         },
       ),
@@ -226,7 +226,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ✅ Function to create large images dynamically
+  
   Widget _buildImage(String imagePath, double height) {
     return Container(
       height: height * 0.2, // Adjusts dynamically
@@ -240,7 +240,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ✅ Function to create small images dynamically
+  
   Widget _buildSmallImage(String imagePath, double height) {
     return Expanded(
       child: Container(

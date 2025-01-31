@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart'; // Import HomePage for navigation
-import 'kits_page.dart';  // ✅ Import KitsPage for navigation
+import 'kits_page.dart';  
 
 
 
@@ -50,7 +50,7 @@ GestureDetector(
   onTap: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => KitsPage()), // ✅ Navigates to KitsPage
+      MaterialPageRoute(builder: (context) => KitsPage()),
     );
   },
   child: Container(
@@ -66,7 +66,7 @@ GestureDetector(
   ),
 ),
 
-        SizedBox(height: 5), // Space between image & text
+        SizedBox(height: 5), 
         Text(
           "KITS",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -121,7 +121,7 @@ SizedBox(height: 10), // Space before the banners
 
 SizedBox(height: 10), // Space before the banners
 
-              // ✅ Top Section: Vertical Banner + Two Horizontal Banners
+              
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -172,10 +172,10 @@ SizedBox(height: 10), // Space before the banners
 
               SizedBox(height: 20), // Space before products
 
-              // ✅ Product Grid (2 Rows of 4 Products Each)
+              
 Column(
   children: [
-    // ✅ First Row Heading - TIMELESS
+    
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -195,7 +195,7 @@ Column(
       ),
     ),
 
-    // ✅ First Row (Timeless Products)
+    
     SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -281,7 +281,7 @@ Column(
 
     SizedBox(height: 20), // Space before next section
 
-    // ✅ Second Row Heading - KEEP EVOLVING
+    
     Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -301,7 +301,7 @@ Column(
       ),
     ),
 
-    // ✅ Second Row (Evolving Products)
+    
     SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -433,7 +433,7 @@ bottomNavigationBar: BottomAppBar(
     );
   }
 
-  // ✅ Function to Build Product Cards
+  
   Widget _buildProductCard(BuildContext context, String imagePath) {
     return Card(
       color: Colors.black,

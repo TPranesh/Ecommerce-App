@@ -7,36 +7,36 @@ class RegisterPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 31, 10, 10),
         title: Text("Register"),
-        leading: IconButton( // 🔙 Added Back Button
+        leading: IconButton( // 
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // 👈 Goes back to the previous screen
+            Navigator.pop(context); // 
           },
         ),
       ),
       body: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.85, // ✅ Responsive width
+          width: MediaQuery.of(context).size.width * 0.85, // 
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white, // ✅ Box background
+            color: Colors.white, // 
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(color: Colors.black26, blurRadius: 5),
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // ✅ Wrap content
+            mainAxisSize: MainAxisSize.min, // 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ✅ Heading
+              //
               Text(
                 "Register",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 15),
 
-              // ✅ Username
+              
               Text("Username", style: TextStyle(fontSize: 16)),
               SizedBox(height: 5),
               TextField(
@@ -47,7 +47,7 @@ class RegisterPage extends StatelessWidget {
               ),
               SizedBox(height: 15),
 
-              // ✅ Password
+              // 
               Text("Password", style: TextStyle(fontSize: 16)),
               SizedBox(height: 5),
               TextField(
@@ -59,7 +59,7 @@ class RegisterPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
 
-              // ✅ Register Button (Centered)
+              // 
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -76,7 +76,7 @@ class RegisterPage extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0), // ✅ Background color
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0), // 
     );
   }
 }

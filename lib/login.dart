@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';  // ✅ Navigate to HomePage on success
-import 'register.dart';  // ✅ Import RegisterPage
-
+import 'home_page.dart';  // 
+import 'register.dart';  // 
 class LoginPage extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -15,26 +14,26 @@ class LoginPage extends StatelessWidget {
       ),
       body: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.85, // ✅ Responsive width
+          width: MediaQuery.of(context).size.width * 0.85, // 
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white, // ✅ Box background
+            color: Colors.white, // 
             borderRadius: BorderRadius.circular(10),
             boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 5)],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // ✅ Wrap content
+            mainAxisSize: MainAxisSize.min, //
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ✅ Heading
+              //
               Text("Login", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               SizedBox(height: 15),
 
-              // ✅ Username
+              // 
               Text("Username", style: TextStyle(fontSize: 16)),
               SizedBox(height: 5),
               TextField(
-                controller: usernameController, // ✅ Captures username input
+                controller: usernameController, 
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Enter your username",
@@ -42,11 +41,11 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 15),
 
-              // ✅ Password
+              
               Text("Password", style: TextStyle(fontSize: 16)),
               SizedBox(height: 5),
               TextField(
-                controller: passwordController, // ✅ Captures password input
+                controller: passwordController, 
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -68,7 +67,7 @@ class LoginPage extends StatelessWidget {
                       if (username == "user123" && password == "password123") {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()), // ✅ Goes to HomePage
+                          MaterialPageRoute(builder: (context) => HomePage()), 
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -104,7 +103,7 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: Colors.black, // ✅ Background color to highlight the box
+      backgroundColor: Colors.black, 
     );
   }
 }

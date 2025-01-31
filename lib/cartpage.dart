@@ -34,7 +34,7 @@ class _CartPageState extends State<CartPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20), // ✅ Space before heading
+            SizedBox(height: 20), 
             Text(
               "CART PAGE",
               style: TextStyle(
@@ -63,7 +63,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   child: Row(
                     children: [
-                      // ✅ Image with Error Handling
+                      
                       Image.asset(
                         item["image"],
                         width: screenWidth * 0.3,
@@ -80,7 +80,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       SizedBox(width: 10),
 
-                      // ✅ Product Details
+                      
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +92,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
 
-                      // ✅ Quantity Controls & Delete Button
+                      
                       Column(
                         children: [
                           Row(
@@ -136,7 +136,7 @@ class _CartPageState extends State<CartPage> {
 
             SizedBox(height: 10),
 
-            // ✅ Total Price Section
+            
             Container(
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -172,7 +172,7 @@ class _CartPageState extends State<CartPage> {
 
       backgroundColor: Colors.black,
 
-      // ✅ Bottom Navigation Bar (No Back Button Needed)
+      
       bottomNavigationBar: BottomAppBar(
         color: Colors.black,
         child: Row(

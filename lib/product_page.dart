@@ -39,50 +39,50 @@ class ProductPage extends StatelessWidget {
         ),
       ),
 
-      body: SingleChildScrollView( // ✅ Prevents overflow in landscape
+      body: SingleChildScrollView( 
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // ✅ Consistent padding
+          padding: const EdgeInsets.all(16.0), 
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // ✅ Aligns text to the left
+            crossAxisAlignment: CrossAxisAlignment.start, 
             children: [
-              // ✅ Product Image (Reduced Width in Landscape & Prevent Cropping)
+              
               Center(
                 child: Container(
-                  height: screenHeight * 0.35, // ✅ Keep height same
-                  width: isLandscape ? screenWidth * 0.6 : double.infinity, // ✅ Smaller width in landscape
+                  height: screenHeight * 0.35, 
+                  width: isLandscape ? screenWidth * 0.6 : double.infinity, 
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
                       image: AssetImage("assets/images/Barcelona-Away-Football-Shirt-2425 (1)-600x600.jpg"),
-                      fit: isLandscape ? BoxFit.contain : BoxFit.cover, // ✅ Prevent cropping in landscape
+                      fit: isLandscape ? BoxFit.contain : BoxFit.cover, 
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 20),
 
-              // ✅ Product Name (Left-Aligned)
+              
               Text(
                 "Barcelona Away Kit",
                 style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 5),
 
-              // ✅ Product Price (Left-Aligned)
+              
               Text(
                 "RS 5000",
                 style: TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 15),
 
-              // ✅ Product Description (Left-Aligned)
+              
               Text(
                 "The official Barcelona Away kit for the 2024/2025 season. Made with high-quality breathable fabric for maximum comfort.",
                 style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
               SizedBox(height: 20),
 
-              // ✅ Size Dropdown (Left-Aligned)
+              
               Text(
                 "Select Size",
                 style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
@@ -103,12 +103,12 @@ class ProductPage extends StatelessWidget {
                       child: Text(value),
                     );
                   }).toList(),
-                  underline: Container(), // ✅ Removes default underline
+                  underline: Container(), 
                 ),
               ),
               SizedBox(height: 20),
 
-              // ✅ Add to Cart Button (Centered)
+              
               Center(
                 child: ElevatedButton(
                   onPressed: () {},

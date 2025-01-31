@@ -44,7 +44,7 @@ class KitsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ✅ Banner Section
+            
             Container(
               width: double.infinity,
               height: screenHeight * 0.60,
@@ -72,7 +72,7 @@ class KitsPage extends StatelessWidget {
 
             SizedBox(height: 10),
 
-            // ✅ First Row
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -82,7 +82,7 @@ class KitsPage extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProductPage()), // ✅ Only first image clickable
+                          MaterialPageRoute(builder: (context) => ProductPage()), 
                         );
                       },
                       child: Container(
@@ -145,7 +145,7 @@ class KitsPage extends StatelessWidget {
 
             SizedBox(height: 10),
 
-            // ✅ Second Row
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -210,7 +210,7 @@ class KitsPage extends StatelessWidget {
 
             SizedBox(height: 10),
 
-            // ✅ Third Row (✅ NOW FIXED)
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

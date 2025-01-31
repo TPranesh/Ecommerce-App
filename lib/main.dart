@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Football Store',
       theme: ThemeData(
-        primarySwatch: Colors.green, // Adjust to match your design
+        primarySwatch: Colors.green, 
       ),
       home: HomePage(),
     );
