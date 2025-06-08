@@ -49,25 +49,43 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {    return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-      ),
-      body: Center(
+      ),      body: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.85,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 5)],
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.black54 
+                    : Colors.black26, 
+                blurRadius: 5
+              )
+            ],
           ),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Login', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              crossAxisAlignment: CrossAxisAlignment.start,              children: [
+                Text(
+                  'Login', 
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.headlineMedium?.color,
+                  )
+                ),
                 const SizedBox(height: 15),
-                const Text('Email', style: TextStyle(fontSize: 16)),
+                Text(
+                  'Email', 
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  )
+                ),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: emailController,
@@ -79,10 +97,15 @@ class _LoginPageState extends State<LoginPage> {
                     if (value == null || value.isEmpty) return 'Please enter your email';
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) return 'Invalid email';
                     return null;
-                  },
-                ),
+                  },                ),
                 const SizedBox(height: 15),
-                const Text('Password', style: TextStyle(fontSize: 16)),
+                Text(
+                  'Password', 
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  )
+                ),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: passwordController,

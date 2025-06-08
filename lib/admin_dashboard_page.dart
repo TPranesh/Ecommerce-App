@@ -78,15 +78,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(      appBar: AppBar(
-        backgroundColor: Colors.black,
+  Widget build(BuildContext context) {    return Scaffold(
+      appBar: AppBar(
         title: Row(
           children: [
             Image.asset('assets/images/logo.png', height: 40),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Text('Admin Dashboard', style: TextStyle(color: Colors.white)),
+            const SizedBox(width: 10),            const Expanded(
+              child: Text('Admin Dashboard'),
             ),
             // Battery Status
             Consumer<BatteryProvider>(
@@ -186,12 +184,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               },
                             ),
                           ],
-                        ),
-                      ),
-                    ],
+                        ),                ),
+              ],
                   ),
                 ),
-      backgroundColor: Colors.black,
     );
   }
 
