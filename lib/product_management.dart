@@ -371,8 +371,9 @@ class _ProductManagementState extends State<ProductManagement> {
           children: [
             Image.asset('assets/images/logo.png', height: 40),
             const SizedBox(width: 10),
-            const Text('Product Management', style: TextStyle(color: Colors.white)),
-            const Spacer(),
+            const Expanded(
+              child: Text('Product Management', style: TextStyle(color: Colors.white)),
+            ),
             // Battery Status with low battery warning
             Consumer<BatteryProvider>(
               builder: (context, battery, _) {

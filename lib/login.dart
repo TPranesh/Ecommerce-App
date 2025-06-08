@@ -46,10 +46,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {    return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Text('Login'),
       ),
       body: Center(
@@ -127,10 +125,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-          ),
-        ),
+          ),        ),
       ),
-      backgroundColor: Colors.black,
     );
   }
 }

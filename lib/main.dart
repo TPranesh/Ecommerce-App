@@ -12,15 +12,16 @@ import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/battery_provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
+    MultiProvider(      providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (_) => BatteryProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const MyApp(),
     ),
@@ -28,30 +29,68 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
+  const MyApp({super.key});  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Football Ecommerce App',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.red,
-        brightness: Brightness.dark,
-      ),
-      themeMode: ThemeMode.system,
-      builder: (context, child) {
-        return ConnectivityWrapper(child: child ?? Container());
-      },
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, _) {
+        return MaterialApp(
+          title: 'Football Ecommerce App',          theme: ThemeData(
+            primarySwatch: Colors.red,
+            brightness: Brightness.light,
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            bottomAppBarTheme: const BottomAppBarTheme(
+              color: Colors.white,
+            ),
+            cardTheme: CardTheme(
+              color: Colors.grey.shade100,
+            ),
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(color: Colors.black),
+              bodyMedium: TextStyle(color: Colors.black),
+              bodySmall: TextStyle(color: Colors.black),
+            ),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+          ),          darkTheme: ThemeData(
+            primarySwatch: Colors.red,
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            bottomAppBarTheme: const BottomAppBarTheme(
+              color: Colors.black,
+            ),
+            cardTheme: CardTheme(
+              color: Colors.grey.shade800,
+            ),
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(color: Colors.white),
+              bodyMedium: TextStyle(color: Colors.white),
+              bodySmall: TextStyle(color: Colors.white),
+            ),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+          ),
+          themeMode: themeProvider.themeMode,
+          builder: (context, child) {
+            return ConnectivityWrapper(child: child ?? Container());
+          },
       home: Consumer<AuthProvider>(
         builder: (context, auth, _) {
           // Load token once when app starts
           WidgetsBinding.instance.addPostFrameCallback((_) {
             auth.loadToken();
-          });
-          return auth.isAuthenticated ? const HomePage() : const LoginPage();
+          });          return auth.isAuthenticated ? const HomePage() : const LoginPage();
         },
       ),
       routes: {
@@ -62,6 +101,8 @@ class MyApp extends StatelessWidget {
         '/memerobilia': (context) => const HomePage(),
         '/register': (context) => const RegisterPage(),
         '/admin_dashboard': (context) => const AdminDashboardPage(),
+      },
+        );
       },
     );
   }

@@ -61,10 +61,8 @@ class _CartPageState extends State<CartPage> {
     }
   }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {    return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Text('Shopping Cart', style: TextStyle(color: Colors.white)),
       ),
       body: Consumer<CartProvider>(
@@ -354,17 +352,18 @@ class _CartPageState extends State<CartPage> {
                       ),
               ],
             ),
-          );
-        },
-      ),
-      backgroundColor: Colors.black,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+          );        },
+      ),      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).bottomAppBarTheme.color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.home, color: Colors.white, size: 30),
+              icon: Icon(Icons.home, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -373,7 +372,11 @@ class _CartPageState extends State<CartPage> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.shopping_bag, color: Colors.white, size: 30),
+              icon: Icon(Icons.shopping_bag, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -388,7 +391,11 @@ class _CartPageState extends State<CartPage> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.person, color: Colors.white, size: 30),
+              icon: Icon(Icons.person, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 // Placeholder for ProfilePage navigation
               },

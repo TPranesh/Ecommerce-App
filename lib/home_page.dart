@@ -5,19 +5,19 @@ import 'login.dart';
 import 'cartpage.dart';
 import 'admin_dashboard_page.dart';
 import 'providers/auth_provider.dart';
+import 'providers/theme_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final authProvider = Provider.of<AuthProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Row(
           children: [
             Image.asset(
@@ -26,6 +26,15 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             const Spacer(),
+            // Theme toggle button
+            IconButton(
+              onPressed: () {
+                themeProvider.toggleTheme();
+              },
+              icon: Icon(themeProvider.themeIcon),
+              tooltip: 'Theme: ${themeProvider.themeModeText}',
+            ),
+            const SizedBox(width: 10),
             if (authProvider.isAuthenticated) ...[
               if (authProvider.userRole == 'admin') ...[
                 ElevatedButton(
@@ -228,11 +237,8 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-      backgroundColor: Colors.black,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        ),        ),      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).bottomAppBarTheme.color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -246,15 +252,24 @@ class HomePage extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.shopping_bag, color: Colors.white, size: 30),
+              icon: Icon(Icons.shopping_bag, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => ShopPage()),
                 );
               },
-            ),            IconButton(
-              icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
+            ),
+            IconButton(
+              icon: Icon(Icons.shopping_cart, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,

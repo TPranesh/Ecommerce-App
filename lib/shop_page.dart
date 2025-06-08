@@ -9,10 +9,8 @@ class ShopPage extends StatelessWidget {
   const ShopPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {    return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Row(
           children: [
             Image.asset(
@@ -374,16 +372,17 @@ class ShopPage extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-      backgroundColor: Colors.black,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        ),      ),      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).bottomAppBarTheme.color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.home, color: Colors.white, size: 30),
+              icon: Icon(Icons.home, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -396,7 +395,11 @@ class ShopPage extends StatelessWidget {
               onPressed: () {},
             ),
             IconButton(
-              icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
+              icon: Icon(Icons.shopping_cart, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -405,7 +408,11 @@ class ShopPage extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.person, color: Colors.white, size: 30),
+              icon: Icon(Icons.person, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black, 
+                size: 30),
               onPressed: () {
                 // Placeholder for ProfilePage navigation
               },

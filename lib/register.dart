@@ -66,10 +66,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {    return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Text('Register'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -168,10 +166,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ],
             ),
-          ),
-        ),
+          ),        ),
       ),
-      backgroundColor: Colors.black,
     );
   }
 }

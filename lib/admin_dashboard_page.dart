@@ -85,8 +85,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           children: [
             Image.asset('assets/images/logo.png', height: 40),
             const SizedBox(width: 10),
-            const Text('Admin Dashboard', style: TextStyle(color: Colors.white)),
-            const Spacer(),
+            const Expanded(
+              child: Text('Admin Dashboard', style: TextStyle(color: Colors.white)),
+            ),
             // Battery Status
             Consumer<BatteryProvider>(
               builder: (context, battery, _) {
