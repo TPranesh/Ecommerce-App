@@ -1,13 +1,148 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart'; // Import HomePage for navigation
-import 'package:ecommerce_assignment/shop_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_page.dart';
+import 'shop_page.dart';
+import 'cartpage.dart';
+import 'login.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
+  final String productId;
+
+  const ProductPage({super.key, required this.productId});
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  Map<String, dynamic>? product;
+  bool isLoading = true;
+  String? errorMessage;
+  String? selectedSize;
+  int quantity = 1;
+  String? cartMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProduct();
+  }
+
+  Future<void> _fetchProduct() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8000/api/products/${widget.productId}'),
+        headers: {'Accept': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
+
+      print('Product API Response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+        setState(() {
+          product = jsonDecode(response.body);
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Failed to load product: ${response.statusCode}';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error fetching product: $e';
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<String?> _getAuthToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
+
+  Future<bool> _isLoggedIn() async {
+    final token = await _getAuthToken();
+    if (token == null) return false;
+
+    try {
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8000/api/user'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> _addToCart() async {
+    if (selectedSize == null) {
+      setState(() {
+        cartMessage = 'Please select a size';
+      });
+      return;
+    }
+
+    final isLoggedIn = await _isLoggedIn();
+    if (!isLoggedIn) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('pending_cart_product_id', widget.productId);
+      await prefs.setInt('pending_cart_quantity', quantity);
+      await prefs.setString('pending_cart_size', selectedSize!);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+      return;
+    }
+
+    final token = await _getAuthToken();
+    try {
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/api/cart'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'product_id': widget.productId,
+          'quantity': quantity,
+          'size': selectedSize,
+        }),
+      );
+
+      print('Cart API Response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() {
+          cartMessage = 'Product added to cart successfully!';
+          selectedSize = null;
+          quantity = 1;
+        });
+      } else {
+        setState(() {
+          cartMessage = 'Failed to add to cart: ${response.body}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        cartMessage = 'Error adding to cart: $e';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    bool isLandscape = screenWidth > screenHeight; // Check for landscape mode
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -18,144 +153,219 @@ class ProductPage extends StatelessWidget {
               'assets/images/logo.png',
               height: 40,
             ),
-            SizedBox(width: 10),
-            Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  hintStyle: TextStyle(color: Colors.white60),
-                  filled: true,
-                  fillColor: Colors.grey[800],
-                  prefixIcon: Icon(Icons.search, color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            const SizedBox(width: 10),
           ],
         ),
       ),
-
-      body: SingleChildScrollView( 
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), 
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, 
-            children: [
-              
-              Center(
-                child: Container(
-                  height: screenHeight * 0.35, 
-                  width: isLandscape ? screenWidth * 0.6 : double.infinity, 
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/Barcelona-Away-Football-Shirt-2425 (1)-600x600.jpg"),
-                      fit: isLandscape ? BoxFit.contain : BoxFit.cover, 
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(child: Text(errorMessage!, style: const TextStyle(color: Colors.white)))
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Product Image
+                        Container(
+                          height: screenHeight * 0.3,
+                          width: screenWidth * 0.8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                product!['image_url'] != null
+                                    ? 'http://127.0.0.1:8000/api/image/${product!['image_url'].replaceFirst('storage/', '')}'
+                                    : 'https://via.placeholder.com/150',
+                              ),
+                              fit: BoxFit.contain,
+                              onError: (exception, stackTrace) => print('Image load error: $exception'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Product Name
+                        Text(
+                          product!['name'] ?? 'Unknown',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 10),
+                        // Price
+                        Text(
+                          'RS ${product!['price'] ?? 0}',
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Description in Box
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[900],
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey[700]!),
+                          ),
+                          child: Text(
+                            product!['description'] ?? 'No description available',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Size Dropdown and Quantity Counter Side by Side
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Size Dropdown
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[800],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: DropdownButton<String>(
+                                hint: const Text('Select Size', style: TextStyle(color: Colors.white70)),
+                                value: selectedSize,
+                                dropdownColor: Colors.grey[800],
+                                style: const TextStyle(color: Colors.white),
+                                underline: const SizedBox(),
+                                items: ['Small', 'Medium', 'Large'].map((String size) {
+                                  return DropdownMenuItem<String>(
+                                    value: size,
+                                    child: Text(size),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedSize = newValue;
+                                    cartMessage = null;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            // Quantity Counter
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[800],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove, color: Colors.white, size: 20),
+                                    onPressed: quantity > 1
+                                        ? () {
+                                            setState(() {
+                                              quantity--;
+                                              cartMessage = null;
+                                            });
+                                          }
+                                        : null,
+                                  ),
+                                  Text(
+                                    '$quantity',
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.add, color: Colors.white, size: 20),
+                                    onPressed: () {
+                                      setState(() {
+                                        quantity++;
+                                        cartMessage = null;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Add to Cart Button
+                        ElevatedButton(
+                          onPressed: _addToCart,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Add to Cart',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Cart Message
+                        if (cartMessage != null)
+                          Text(
+                            cartMessage!,
+                            style: TextStyle(
+                              color: cartMessage!.startsWith('Error') || cartMessage!.startsWith('Please')
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-
-              
-              Text(
-                "Barcelona Away Kit",
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-
-              
-              Text(
-                "RS 5000",
-                style: TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 15),
-
-              
-              Text(
-                "The official Barcelona Away kit for the 2024/2025 season. Made with high-quality breathable fabric for maximum comfort.",
-                style: TextStyle(color: Colors.white70, fontSize: 14),
-              ),
-              SizedBox(height: 20),
-
-              
-              Text(
-                "Select Size",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                child: DropdownButton<String>(
-                  value: "S",
-                  onChanged: (String? newValue) {},
-                  items: ["S", "M", "L"].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  underline: Container(), 
-                ),
-              ),
-              SizedBox(height: 20),
-
-              
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  ),
-                  child: Text("Add to Cart", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-
       backgroundColor: Colors.black,
-
       bottomNavigationBar: BottomAppBar(
         color: Colors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.home, color: Colors.red, size: 30),
+              icon: const Icon(Icons.home, color: Colors.white, size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
             ),
             IconButton(
-              icon: Icon(Icons.shopping_bag, color: Colors.white, size: 30),
+              icon: const Icon(Icons.shopping_bag, color: Colors.red, size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ShopPage()),
+                  MaterialPageRoute(builder: (context) => const ShopPage()),
                 );
               },
             ),
             IconButton(
-              icon: Icon(Icons.shopping_cart, color: Colors.white, size: 30),
-              onPressed: () {},
+              icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartPage()),
+                );
+              },
             ),
             IconButton(
-              icon: Icon(Icons.person, color: Colors.white, size: 30),
-              onPressed: () {},
+              icon: const Icon(Icons.person, color: Colors.white, size: 30),
+              onPressed: () {
+                // Placeholder for ProfilePage navigation
+              },
             ),
           ],
         ),
