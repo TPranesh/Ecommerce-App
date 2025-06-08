@@ -253,13 +253,12 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => ShopPage()),
                 );
               },
-            ),
-            IconButton(
+            ),            IconButton(
               icon: const Icon(Icons.shopping_cart, color: Colors.white, size: 30),
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => CartPage()),
+                  MaterialPageRoute(builder: (context) => const CartPage()),
                 );
               },
             ),

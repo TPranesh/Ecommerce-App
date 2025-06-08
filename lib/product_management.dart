@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'login.dart';
 import 'providers/auth_provider.dart';
+import 'providers/battery_provider.dart';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:html' as html if (dart.library.io) 'dart:io';
@@ -364,14 +365,49 @@ class _ProductManagementState extends State<ProductManagement> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(      appBar: AppBar(
         backgroundColor: Colors.black,
         title: Row(
           children: [
             Image.asset('assets/images/logo.png', height: 40),
             const SizedBox(width: 10),
             const Text('Product Management', style: TextStyle(color: Colors.white)),
+            const Spacer(),
+            // Battery Status with low battery warning
+            Consumer<BatteryProvider>(
+              builder: (context, battery, _) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: battery.isCriticalBattery 
+                        ? Colors.red.shade800
+                        : battery.isLowBattery 
+                            ? Colors.orange.shade700 
+                            : Colors.green.shade700,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        battery.batteryIcon,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        battery.batteryText,
+                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                      if (battery.isLowBattery) ...[
+                        const SizedBox(width: 4),
+                        const Icon(Icons.warning, color: Colors.white, size: 14),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 10),
           ],
         ),
       ),

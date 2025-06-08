@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'shop_page.dart';
 import 'cartpage.dart';
 import 'login.dart';
+import 'providers/cart_provider.dart';
 
 class ProductPage extends StatefulWidget {
   final String productId;
@@ -80,7 +82,6 @@ class _ProductPageState extends State<ProductPage> {
       return false;
     }
   }
-
   Future<void> _addToCart() async {
     if (selectedSize == null) {
       setState(() {
@@ -89,52 +90,43 @@ class _ProductPageState extends State<ProductPage> {
       return;
     }
 
-    final isLoggedIn = await _isLoggedIn();
-    if (!isLoggedIn) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('pending_cart_product_id', widget.productId);
-      await prefs.setInt('pending_cart_quantity', quantity);
-      await prefs.setString('pending_cart_size', selectedSize!);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+    if (product == null) {
+      setState(() {
+        cartMessage = 'Product data not available';
+      });
       return;
     }
 
-    final token = await _getAuthToken();
     try {
-      final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/cart'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'product_id': widget.productId,
-          'quantity': quantity,
-          'size': selectedSize,
-        }),
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      
+      await cartProvider.addItem(
+        productId: widget.productId,
+        name: product!['name'] ?? 'Unknown Product',
+        imageUrl: product!['image_url'],
+        price: double.tryParse(product!['price'].toString()) ?? 0.0,
+        size: selectedSize,
+        quantity: quantity,
+        category: product!['category'] ?? 'general',
       );
 
-      print('Cart API Response: ${response.statusCode} - ${response.body}');
+      setState(() {
+        cartMessage = 'Product added to cart successfully!';
+        selectedSize = null;
+        quantity = 1;
+      });
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        setState(() {
-          cartMessage = 'Product added to cart successfully!';
-          selectedSize = null;
-          quantity = 1;
-        });
-      } else {
-        setState(() {
-          cartMessage = 'Failed to add to cart: ${response.body}';
-        });
-      }
+      // Clear message after 3 seconds
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            cartMessage = null;
+          });
+        }
+      });
     } catch (e) {
       setState(() {
-        cartMessage = 'Error adding to cart: $e';
+        cartMessage = 'Error adding product to cart: $e';
       });
     }
   }

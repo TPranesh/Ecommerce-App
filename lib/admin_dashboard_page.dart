@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'login.dart';
 import 'product_management.dart';
 import 'providers/auth_provider.dart';
+import 'providers/battery_provider.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -78,14 +79,41 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(      appBar: AppBar(
         backgroundColor: Colors.black,
         title: Row(
           children: [
             Image.asset('assets/images/logo.png', height: 40),
             const SizedBox(width: 10),
             const Text('Admin Dashboard', style: TextStyle(color: Colors.white)),
+            const Spacer(),
+            // Battery Status
+            Consumer<BatteryProvider>(
+              builder: (context, battery, _) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: battery.isLowBattery ? Colors.red.shade700 : Colors.green.shade700,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        battery.batteryIcon,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        battery.batteryText,
+                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 10),
           ],
         ),
       ),
